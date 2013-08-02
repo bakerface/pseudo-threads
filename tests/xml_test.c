@@ -30,7 +30,7 @@ void xml_test(jasmine_t *jasmine) {
     char buffer[10];
     xml_t xml;
     
-    jasmine_describe(jasmine, "an xml") {
+    jasmine_describe(jasmine, "an xml parser") {
 	    jasmine_before(jasmine) {
             xml_init(&xml, buffer, sizeof(buffer));
 	    }
@@ -345,6 +345,27 @@ void xml_test(jasmine_t *jasmine) {
 	        jasmine_expect(jasmine, xml_parse(&xml, ' ') == XML_NONE);
 	        jasmine_expect(jasmine, xml_parse(&xml, '>') == XML_CLOSE_ELEMENT);
 	        jasmine_expect(jasmine, !strncmp("customer", xml.buffer, xml.size));
+	    }
+	    
+	    jasmine_it(jasmine, "should return error if buffer is too small") {
+	        jasmine_expect(jasmine, xml_parse(&xml, '<') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, 'c') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, 'u') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, 's') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, 't') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, 'o') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, 'm') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, 'e') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, 'r') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, 'c') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, 'u') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, 's') == XML_ERROR);
+	    }
+	    
+	    jasmine_it(jasmine, "should return error if invalid xml") {
+	        jasmine_expect(jasmine, xml_parse(&xml, '<') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, '/') == XML_NONE);
+	        jasmine_expect(jasmine, xml_parse(&xml, '<') == XML_ERROR);
 	    }
     }
 }

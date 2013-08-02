@@ -28,6 +28,7 @@
 #include "thread.h"
 
 typedef enum xml_type {
+    XML_ERROR,
     XML_NONE,
     XML_OPEN_ELEMENT,
     XML_CLOSE_ELEMENT,

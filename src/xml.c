@@ -24,6 +24,12 @@
 
 #include "xml.h"
 
+#define is_lowercase(c)  (c >= 'a' && c <= 'z')
+#define is_uppercase(c)  (c >= 'A' && c <= 'Z')
+#define is_alpha(c)      (c == '_' || is_uppercase(c) || is_lowercase(c))
+#define is_digit(c)      (c >= '0' && c <= '9')
+#define is_alnum(c)      (is_digit(c) || is_alpha(c))
+
 void xml_init(xml_t *xml, char *buffer, unsigned short size) {
     thread_init(&xml->thread);
     xml->buffer = buffer;
@@ -36,25 +42,28 @@ thread_state_t parse(xml_t *xml, char c) {
     thread_start(&xml->thread) {
         for (;;) {
             thread_wait(&xml->thread, c == '<');
-            thread_yield(&xml->thread);
+            thread_wait(&xml->thread, c != '<');
             
             if (c == '/') {
                 thread_yield(&xml->thread);
+                thread_assert(&xml->thread, is_alpha(c));
                 
                 for (xml->size = 0;
-                        xml->size < xml->capacity && c != ' ' && c != '>';
+                        xml->size < xml->capacity && is_alnum(c);
                         xml->size++) {
                     xml->buffer[xml->size] = c;
                     thread_yield(&xml->thread);
                 }
                 
+                thread_assert(&xml->thread, xml->size > 0);
                 thread_wait(&xml->thread, c != ' ');
                 xml->type = XML_CLOSE_ELEMENT;
             }
             else {
+                thread_assert(&xml->thread, is_alpha(c));
+            
                 for (xml->size = 0;
-                        xml->size < xml->capacity
-                            && c != ' ' && c != '/' && c != '>';
+                        xml->size < xml->capacity && is_alnum(c);
                         xml->size++) {
                     xml->buffer[xml->size] = c;
                     thread_yield(&xml->thread);
@@ -65,14 +74,15 @@ thread_state_t parse(xml_t *xml, char c) {
                 while (c == ' ') {
                     thread_wait(&xml->thread, c != ' ');
                     
-                    if (c != '/' && c != '>') {
+                    if (is_alpha(c)) {                        
                         for (xml->size = 0;
-                                xml->size < xml->capacity && c != '=';
+                                xml->size < xml->capacity && is_alnum(c);
                                 xml->size++) {
                             xml->buffer[xml->size] = c;
                             thread_yield(&xml->thread);
                         }
                         
+                        thread_assert(&xml->thread, xml->size > 0);
                         xml->type = XML_ATTRIBUTE;
                         
                         thread_assert(&xml->thread, c == '=');
@@ -108,7 +118,10 @@ thread_state_t parse(xml_t *xml, char c) {
 }
 
 unsigned char xml_parse(xml_t *xml, char c) {
-    parse(xml, c);
+    if (parse(xml, c) == THREAD_STATE_ASSERTED) {
+        return XML_ERROR;
+    }
+    
     return xml->type;
 }
 
