@@ -31,6 +31,7 @@ typedef unsigned char thread_state_t;
 #define THREAD_STATE_WAITING    1
 #define THREAD_STATE_YIELDING   2
 #define THREAD_STATE_RESTARTING 3
+#define THREAD_STATE_ASSERTED   4
 
 #define THREAD_LINE_START 0
 #define THREAD_LINE_END   ((unsigned short)-1)
@@ -65,6 +66,13 @@ typedef struct thread {
 		    return THREAD_STATE_WAITING; \
 	    } \
 	    (thread)->line = THREAD_LINE_END; \
+} while (0)
+
+#define thread_assert(thread, condition) do { \
+    if (!(condition)) { \
+        thread_init(thread); \
+	    return THREAD_STATE_ASSERTED; \
+    } \
 } while (0)
 
 #endif /* THREAD_H_ */

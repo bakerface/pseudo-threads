@@ -59,6 +59,14 @@ thread_state_t wait_routine(thread_t *thread, unsigned char flag) {
     return THREAD_STATE_FINISHED;
 }
 
+thread_state_t assert_routine(thread_t *thread, unsigned char flag) {
+    thread_start(thread) {
+	    thread_assert(thread, flag == 0);
+    }
+
+    return THREAD_STATE_FINISHED;
+}
+
 void thread_test(jasmine_t *jasmine) {
     thread_t thread;
 
@@ -139,6 +147,24 @@ void thread_test(jasmine_t *jasmine) {
 			    
 			jasmine_expect(jasmine,
 			    THREAD_STATE_FINISHED == wait_routine(&thread, 1));
+	    }
+	    
+	    jasmine_it(jasmine, "should continue if an assertion passes") {
+		    jasmine_expect(jasmine,
+			    THREAD_STATE_FINISHED == assert_routine(&thread, 0));
+	    }
+	    
+	    jasmine_it(jasmine, "should assert if an assertion fails") {
+		    jasmine_expect(jasmine,
+			    THREAD_STATE_ASSERTED == assert_routine(&thread, 1));
+	    }
+	    
+	    jasmine_it(jasmine, "should restart after an assertion fails") {
+	        jasmine_expect(jasmine,
+			    THREAD_STATE_ASSERTED == assert_routine(&thread, 1));
+	    
+		    jasmine_expect(jasmine,
+			    THREAD_STATE_FINISHED == assert_routine(&thread, 0));
 	    }
     }
 }
