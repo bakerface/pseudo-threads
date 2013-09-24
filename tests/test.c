@@ -25,7 +25,6 @@
 #include "thread_test.h"
 #include "semaphore_test.h"
 #include "timer_test.h"
-#include "xml_test.h"
 
 int main(void) {
     jasmine_t jasmine;
@@ -34,7 +33,6 @@ int main(void) {
     thread_test(&jasmine);
     semaphore_test(&jasmine);
     timer_test(&jasmine);
-    xml_test(&jasmine);
 
     printf("jasmine: %u passed, %u failed, %u ignored, %u expects\r\n",
         jasmine.passed, jasmine.failed, jasmine.ignored, jasmine.expects);
