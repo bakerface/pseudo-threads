@@ -1,6 +1,6 @@
 e = Environment()
 
-project_name = ARGUMENTS.get("project-name", "e3")
+project_name = ARGUMENTS.get("project-name", "pt")
 build_type = ARGUMENTS.get("build-type", "")
 test_binary = ARGUMENTS.get("test-binary", "test")
 
