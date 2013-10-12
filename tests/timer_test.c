@@ -24,9 +24,9 @@
 
 #include "timer_test.h"
 
-typedef unsigned long clock_t;
+typedef int clock_t;
 
-clock_t now = 1000;
+clock_t now;
 
 clock_t clock(void) {
     return now;
@@ -39,7 +39,7 @@ void timer_test(jasmine_t *jasmine) {
 
     jasmine_describe(jasmine, "a timer") {
 	    jasmine_before(jasmine) {
-	    
+
 	    }
 
 	    jasmine_after(jasmine) {
@@ -47,11 +47,31 @@ void timer_test(jasmine_t *jasmine) {
 	    }
 
 	    jasmine_it(jasmine, "should initialize with the end time") {
+	        now = 1000;
 	        timer_init(&timer, 1000);
 		    jasmine_expect(jasmine, 2000 == timer.end);
 	    }
 	    
 	    jasmine_it(jasmine, "should report whether the time has expired") {
+	        now = 1000;
+	        timer_init(&timer, 1000);
+		    jasmine_expect(jasmine, !timer_expired(&timer));
+		    
+		    now += 1000;
+		    jasmine_expect(jasmine, timer_expired(&timer));
+	    }
+	    
+	    jasmine_it(jasmine, "should handle rollovers to negative numbers") {
+	        now = 2147483647;
+	        timer_init(&timer, 1000);
+		    jasmine_expect(jasmine, !timer_expired(&timer));
+		    
+		    now += 1000;
+		    jasmine_expect(jasmine, timer_expired(&timer));
+	    }
+	    
+	    jasmine_it(jasmine, "should handle rollovers to positive numbers") {
+	        now = -500;
 	        timer_init(&timer, 1000);
 		    jasmine_expect(jasmine, !timer_expired(&timer));
 		    

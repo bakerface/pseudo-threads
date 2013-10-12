@@ -30,7 +30,7 @@ typedef struct timer {
 } timer_t;
 
 #define timer_init(timer, ticks) (timer)->end = clock() + (ticks)
-#define timer_expired(timer)     ((timer)->end <= clock())
+#define timer_expired(timer)     ((clock_t) (clock() - (timer)->end >= 0))
 
 #endif /* TIMER_H_ */
 
