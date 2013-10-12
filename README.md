@@ -1,6 +1,4 @@
-E3 - The Extensible Embedded Environment
+Pseudo-threads
 ========================================
 
-This project is intended to be the minimal set of source code capable of
-jump-starting an embedded ANSI C project. The code is designed to be capable
-of running on bare metal or on an operating system.
+This is a set of macros inspired by proto-threads, but adding some syntax sugar to make the code more elegant.
