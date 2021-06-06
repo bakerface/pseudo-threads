@@ -21,49 +21,11 @@
  *
  */
 
-#ifndef THREAD_H_
-#define THREAD_H_
+#ifndef THREAD_TEST_H_
+#define THREAD_TEST_H_
 
-#define THREAD_SUCCESS 0
-#define THREAD_FAILURE 1
-#define THREAD_PENDING 2
+#include "mocha.h"
 
-#define __LINE_MAX__ ((thread_t) -1)
+extern void thread_test(mocha_t *mocha);
 
-typedef unsigned short thread_t;
-
-#define thread_init(thread) (*(thread)) = 0
-
-#define thread_start(thread) \
-  switch (*(thread)) \
-  case 0: \
-  if ((*(thread) = __LINE_MAX__))
-
-#define thread_restart(thread) do { \
-  thread_init(thread); \
-  return THREAD_PENDING; \
-} while (0)
-
-#define thread_yield(thread) do { \
-  (*(thread)) = __LINE__; \
-  return THREAD_PENDING; \
-  case __LINE__: \
-  (*(thread)) = __LINE_MAX__; \
-} while (0)
-
-#define thread_wait(thread, condition) do { \
-  (*(thread)) = __LINE__; \
-  case __LINE__: \
-  if (!(condition)) return THREAD_PENDING; \
-  (*(thread)) = __LINE_MAX__; \
-} while (0)
-
-#define thread_assert(thread, condition) do { \
-  if (!(condition)) { \
-    (*(thread)) = __LINE__; \
-    case __LINE__: \
-    return THREAD_FAILURE; \
-  } \
-} while (0)
-
-#endif /* THREAD_H_ */
+#endif /* THREAD_TEST_H_ */
