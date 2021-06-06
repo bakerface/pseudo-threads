@@ -1,0 +1,14 @@
+clang
+-std=gnu++98
+-I
+include
+-ansi
+-pedantic
+-Wall
+-Werror
+-Wextra
+-O0
+-fprofile-arcs
+-ftest-coverage
+-fno-exceptions
+-fno-rtti

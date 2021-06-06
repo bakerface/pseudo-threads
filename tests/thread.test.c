@@ -80,84 +80,55 @@ void thread_test(mocha_t *mocha) {
     mocha_it(mocha, "can run to completion") {
       unsigned char count = 0;
 
-      mocha_assert(mocha,
-          THREAD_SUCCESS == run_routine(&thread, &count));
-
+      mocha_assert(mocha, THREAD_SUCCESS == run_routine(&thread, &count));
       mocha_assert(mocha, 1 == count);
     }
 
     mocha_it(mocha, "should retain success state") {
       unsigned char count = 0;
 
-      mocha_assert(mocha,
-          THREAD_SUCCESS == run_routine(&thread, &count));
-
-      mocha_assert(mocha,
-          THREAD_SUCCESS == run_routine(&thread, &count));
-
+      mocha_assert(mocha, THREAD_SUCCESS == run_routine(&thread, &count));
+      mocha_assert(mocha, THREAD_SUCCESS == run_routine(&thread, &count));
       mocha_assert(mocha, 1 == count);
     }
 
     mocha_it(mocha, "can restart") {
-      mocha_assert(mocha,
-          THREAD_PENDING == restart_routine(&thread));
-
-      mocha_assert(mocha,
-          THREAD_PENDING == restart_routine(&thread));
+      mocha_assert(mocha, THREAD_PENDING == restart_routine(&thread));
+      mocha_assert(mocha, THREAD_PENDING == restart_routine(&thread));
     }
 
     mocha_it(mocha, "can yield execution") {
       unsigned char count = 0;
 
-      mocha_assert(mocha,
-          THREAD_PENDING == yield_routine(&thread, &count));
-
+      mocha_assert(mocha, THREAD_PENDING == yield_routine(&thread, &count));
       mocha_assert(mocha, 0 == count);
 
-      mocha_assert(mocha,
-          THREAD_SUCCESS == yield_routine(&thread, &count));
-
+      mocha_assert(mocha, THREAD_SUCCESS == yield_routine(&thread, &count));
       mocha_assert(mocha, 1 == count);
 
-      mocha_assert(mocha,
-          THREAD_SUCCESS == yield_routine(&thread, &count));
-
+      mocha_assert(mocha, THREAD_SUCCESS == yield_routine(&thread, &count));
       mocha_assert(mocha, 1 == count);
     }
 
     mocha_it(mocha, "can wait for a condition") {
-      mocha_assert(mocha,
-          THREAD_PENDING == wait_routine(&thread, 3));
-
-      mocha_assert(mocha,
-          THREAD_PENDING == wait_routine(&thread, 2));
-
-      mocha_assert(mocha,
-          THREAD_PENDING == wait_routine(&thread, 1));
-
-      mocha_assert(mocha,
-          THREAD_SUCCESS == wait_routine(&thread, 0));
-
-      mocha_assert(mocha,
-          THREAD_SUCCESS == wait_routine(&thread, 1));
+      mocha_assert(mocha, THREAD_PENDING == wait_routine(&thread, 3));
+      mocha_assert(mocha, THREAD_PENDING == wait_routine(&thread, 2));
+      mocha_assert(mocha, THREAD_PENDING == wait_routine(&thread, 1));
+      mocha_assert(mocha, THREAD_SUCCESS == wait_routine(&thread, 0));
+      mocha_assert(mocha, THREAD_SUCCESS == wait_routine(&thread, 1));
     }
 
     mocha_it(mocha, "should proceed if an asserted condition is met") {
-      mocha_assert(mocha,
-          THREAD_SUCCESS == assert_routine(&thread, 0));
+      mocha_assert(mocha, THREAD_SUCCESS == assert_routine(&thread, 0));
     }
 
     mocha_it(mocha, "should halt if an asserted condition is not met") {
-      mocha_assert(mocha,
-          THREAD_FAILURE == assert_routine(&thread, 1));
+      mocha_assert(mocha, THREAD_FAILURE == assert_routine(&thread, 1));
     }
 
     mocha_it(mocha, "should retain failure state") {
-      mocha_assert(mocha,
-          THREAD_FAILURE == assert_routine(&thread, 1));
-
-      mocha_assert(mocha,
-          THREAD_FAILURE == assert_routine(&thread, 0));
+      mocha_assert(mocha, THREAD_FAILURE == assert_routine(&thread, 1));
+      mocha_assert(mocha, THREAD_FAILURE == assert_routine(&thread, 0));
     }
   }
 }
